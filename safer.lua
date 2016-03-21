@@ -27,7 +27,9 @@ function safer.table(t)
    return st
 end
 
-function safer.globals()
+function safer.globals(exception_globals, exception_nils)
+   exception_globals = exception_globals or {}
+   exception_nils = exception_nils or {}
    -- used in typical portability tests
    local allowed_nils = {
       module = true,
@@ -42,13 +44,13 @@ function safer.globals()
    }
    setmetatable(_G, {
       __index = function(_, k)
-         if allowed_nils[k] then
+         if allowed_nils[k] or exception_nils[k] then
             return nil
          end
          error("Attempting to access an undeclared global.")
       end,
       __newindex = function(t, k, v)
-         if allowed_globals[k] then
+         if allowed_globals[k] or exception_globals[k] then
             rawset(t, k, v)
             return
          end
