@@ -35,19 +35,22 @@ function safer.globals(exception_globals, exception_nils)
       module = true,
       unpack = true,
       jit = true,
+      PROXY = true, -- luasocket
    }
    -- legacy modules that set globals
    local allowed_globals = {
-      lfs = true,
+      lfs = true, -- luafilesystem
       copcall = true,
       coxpcall = true,
+      logging = true, -- lualogging
+      TIMEOUT = true, -- luasocket
    }
    setmetatable(_G, {
       __index = function(_, k)
          if allowed_nils[k] or exception_nils[k] then
             return nil
          end
-         error("Attempting to access an undeclared global.")
+         error("Attempting to access an undeclared global '"..k.."'\n"..debug.traceback())
       end,
       __newindex = function(t, k, v)
          if allowed_globals[k] or exception_globals[k] then
