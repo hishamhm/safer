@@ -33,6 +33,7 @@ function safer.globals(exception_globals, exception_nils)
    -- used in typical portability tests
    local allowed_nils = {
       module = true,
+      loadstring = true,
       unpack = true,
       jit = true,
       PROXY = true, -- luasocket
